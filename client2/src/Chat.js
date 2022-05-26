@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo } from "react";
 import { useMutation, useSubscription, gql, useQuery } from "@apollo/client";
-
+import Notifier from "react-desktop-notification";
 import { useState } from "react";
+import useWindowFocus from "use-window-focus";
 
 // Quereies for apollo hooks
 
@@ -34,6 +35,8 @@ const User_Typing = gql`
 
 function Chat() {
 	const [user, setUser] = useState("");
+	const windowFocused = useWindowFocus();
+
 	const typing = gql`
 	mutation {
 		userTyping(user: "${user}")
@@ -47,6 +50,27 @@ function Chat() {
 	const [unreadMessages, setUnreadMessages] = useState(0);
 	// keep track of the new messages posted by users
 	useMemo(() => {
+		console.log();
+		if (
+			data?.messagePosted.user &&
+			data?.messagePosted.user !== user &&
+			!windowFocused
+		) {
+			Notifier.start(
+				`New Messages From ${data?.messagePosted.user}`,
+				`${data?.messagePosted.content}`,
+				"www.google.com",
+				"https://c.clc2l.com/t/g/o/google-photos-75BNHB.png"
+			);
+			if (!("Notification" in window)) {
+				console.log(
+					"This browser does not support desktop notification"
+				);
+			} else {
+				Notification.requestPermission();
+			}
+		}
+
 		if (data?.messagePosted === undefined) return;
 		setMessages([...Messages, data?.messagePosted]);
 
