@@ -8,6 +8,8 @@ import { createClient } from "graphql-ws";
 import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
 import { split, HttpLink } from "@apollo/client";
 import { getMainDefinition } from "@apollo/client/utilities";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import { subscribeUser } from "./subscription";
 
 const httpLink = new HttpLink({
 	uri: "http://localhost:4000/graphql",
@@ -43,7 +45,8 @@ root.render(
 		</ApolloProvider>
 	</React.StrictMode>
 );
-
+serviceWorkerRegistration.register();
+subscribeUser();
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

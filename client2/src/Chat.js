@@ -3,7 +3,8 @@ import { useMutation, useSubscription, gql, useQuery } from "@apollo/client";
 import Notifier from "react-desktop-notification";
 import { useState } from "react";
 import useWindowFocus from "use-window-focus";
-
+import axios from "axios";
+import { subscribeUser } from "./subscription";
 // Quereies for apollo hooks
 
 const Message_Posted = gql`
@@ -50,25 +51,16 @@ function Chat() {
 	const [unreadMessages, setUnreadMessages] = useState(0);
 	// keep track of the new messages posted by users
 	useMemo(() => {
-		console.log();
 		if (
 			data?.messagePosted.user &&
+			data?.messagePosted.content &&
 			data?.messagePosted.user !== user &&
 			!windowFocused
 		) {
-			Notifier.start(
-				`New Messages From ${data?.messagePosted.user}`,
-				`${data?.messagePosted.content}`,
-				"www.google.com",
-				"https://c.clc2l.com/t/g/o/google-photos-75BNHB.png"
-			);
-			if (!("Notification" in window)) {
-				console.log(
-					"This browser does not support desktop notification"
-				);
-			} else {
-				Notification.requestPermission();
-			}
+			subscribeUser({
+				title: data?.messagePosted.user,
+				body: data?.messagePosted.content,
+			});
 		}
 
 		if (data?.messagePosted === undefined) return;
@@ -97,7 +89,7 @@ function Chat() {
 	const [PostMessage] = useMutation(POST_MESSAGE);
 	const [userTyping] = useMutation(typing);
 
-	const Send = () => {
+	const Send = async () => {
 		if (!Message || !user) return;
 		PostMessage();
 		setMessage("");

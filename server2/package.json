@@ -12,12 +12,15 @@
 	"license": "ISC",
 	"dependencies": {
 		"@graphql-tools/schema": "^8.3.13",
+		"@types/web-push": "^3.3.2",
 		"apollo-server-core": "^3.7.0",
 		"apollo-server-express": "^3.7.0",
+		"dotenv": "^16.0.1",
 		"express": "^4.18.1",
 		"graphql": "^16.5.0",
 		"graphql-subscriptions": "^2.0.0",
 		"graphql-ws": "^5.8.2",
+		"web-push": "^3.5.0",
 		"ws": "^8.6.0"
 	},
 	"devDependencies": {
